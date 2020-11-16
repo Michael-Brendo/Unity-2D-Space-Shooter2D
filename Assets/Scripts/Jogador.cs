@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Jogador : MonoBehaviour
 {
@@ -8,20 +9,37 @@ public class Jogador : MonoBehaviour
 
     public BoxCollider2D areaJogo;
 
-    // Start is called before the first frame update
-    void Start()
+    public GameObject projetilPrefab;
+
+    public Text pontosText;
+
+    private int pontos;
+
+    private void Update()
     {
+        Atirar();
+
+        Movimentar();
+
+        AplicarAreaJogo();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void AdicionarPontos()
     {
-        // Movimentação do Jogador
-        var vertical = Input.GetAxis("Vertical");
-        var horizontal = Input.GetAxis("Horizontal");
+        pontos = pontos + 1;
 
-        transform.Translate(new Vector2(horizontal, vertical) * velocidade * Time.deltaTime);
+        pontosText.text = "Pontos: " + pontos;
+    }
+    private void Atirar()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Instantiate(projetilPrefab, transform.position, transform.rotation);
+        }
+    }
 
+    private void AplicarAreaJogo()
+    {
         // Garantir que o jogador está dentro da área de jogo
 
         var position = areaJogo.transform.position;
@@ -38,5 +56,14 @@ public class Jogador : MonoBehaviour
             Mathf.Clamp(transform.position.x, limiteXMin, limiteXMax),
             Mathf.Clamp(transform.position.y, limiteYMin, limiteYMax)
         );
+    }
+
+    private void Movimentar()
+    {
+        // Movimentação do Jogador
+        var vertical = Input.GetAxis("Vertical");
+        var horizontal = Input.GetAxis("Horizontal");
+
+        transform.Translate(new Vector2(horizontal, vertical) * velocidade * Time.deltaTime);
     }
 }
